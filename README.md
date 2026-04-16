@@ -47,7 +47,7 @@ Test coverage: **69 test cases** (49 smoke · 12 regression · 8 negative).
 
 ```
 .
-├── smoke_test_dev.py       # Python smoke test (DEV)
+├── smoke_test.py           # Python smoke test (ENV can be chosen by CLI arg)
 ├── smoke_test_dev.sh       # Bash smoke test (DEV, CI/CD compatible)
 ├── fetchdata.py            # Test data fetching tool — writes testdata_<env>.json
 └── testdata_dev.json       # Generated test data (not versioned — add to .gitignore)

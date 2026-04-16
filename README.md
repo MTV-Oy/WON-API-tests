@@ -1,7 +1,11 @@
+Here's the README translated to English:
+
+---
+
 # WON API Test Suite
 
 > **DEV environment** · v1.0 · 2026-04-14
-> Smoke and regression tests for the WON (Workflow On Network) platform REST APIs.
+> Smoke and regression tests for the WON (Whats'on) platform REST APIs.
 
 ---
 
@@ -12,8 +16,8 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [smoke_test_dev.py](#smoke_test_devpy)
-  - [smoke_test_dev.sh](#smoke_test_devsh)
+  - [smoke\_test\_dev.py](#smoke_test_devpy)
+  - [smoke\_test\_dev.sh](#smoke_test_devsh)
   - [fetchdata.py](#fetchdatapy)
 - [Test Environments](#test-environments)
 - [Test Scope](#test-scope)
@@ -76,7 +80,7 @@ pip install requests
 
 ## Usage
 
-### smoke_test_dev.py
+### smoke\_test\_dev.py
 
 Runs all smoke tests against the DEV environment and prints results to the console.
 
@@ -102,7 +106,7 @@ The script returns exit code `0` if all tests pass, `1` if any test fails.
 
 ---
 
-### smoke_test_dev.sh
+### smoke\_test\_dev.sh
 
 Bash alternative, suitable for CI/CD pipelines (Jenkins, GitHub Actions, etc.).
 

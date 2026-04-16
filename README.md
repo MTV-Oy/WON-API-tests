@@ -1,90 +1,90 @@
 # WON API Test Suite
 
-> **DEV ympäristö** · v1.0 · 2026-04-14  
-> Smoke- ja regressiotestit WON (Workflow On Network) -alustan REST-rajapinnoille.
+> **DEV environment** · v1.0 · 2026-04-14
+> Smoke and regression tests for the WON (Workflow On Network) platform REST APIs.
 
 ---
 
-## Sisällysluettelo
+## Table of Contents
 
-- [Yleiskuvaus](#yleiskuvaus)
-- [Tiedostorakenne](#tiedostorakenne)
-- [Esivaatimukset](#esivaatimukset)
-- [Asennus](#asennus)
-- [Käyttö](#käyttö)
+- [Overview](#overview)
+- [File Structure](#file-structure)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
   - [smoke_test_dev.py](#smoke_test_devpy)
   - [smoke_test_dev.sh](#smoke_test_devsh)
   - [fetchdata.py](#fetchdatapy)
-- [Testiympäristöt](#testiympäristöt)
-- [Testauksen laajuus](#testauksen-laajuus)
-- [Tunnistautuminen](#tunnistautuminen)
-- [Tiedostomuoto: testdata JSON](#tiedostomuoto-testdata-json)
+- [Test Environments](#test-environments)
+- [Test Scope](#test-scope)
+- [Authentication](#authentication)
+- [File Format: testdata JSON](#file-format-testdata-json)
 
 ---
 
-## Yleiskuvaus
+## Overview
 
-Tämä repositorio sisältää automaattiset smoke-testit ja testidatan hakutyökalun WON-alustan kuudelle API-palvelulle:
+This repository contains automated smoke tests and a test data fetching tool for six API services on the WON platform:
 
-| Palvelu | Kuvaus |
+| Service | Description |
 |---|---|
-| **NOVA App Gateway (CIM)** | Yhdyskäytävä, portti 8080 |
-| **BAPI** | Sport-data API, portti 9000 |
-| **COMET** | Trailer-haku ja mediaindeksointi, portti 8090 |
-| **Configurable REST** | Metapankki- ja muutosloki-rajapinnat, portti 8090 |
-| **FENIX** | Media-asset ja tuoterekisteri, portti 8091 |
-| **WON / FRENDS** | Tuotehaku ja integraatiokerros, portti 8092 |
+| **NOVA App Gateway (CIM)** | Gateway, port 8080 |
+| **BAPI** | Sport data API, port 9000 |
+| **COMET** | Trailer search and media indexing, port 8090 |
+| **Configurable REST** | Metabank and change log APIs, port 8090 |
+| **FENIX** | Media asset and product registry, port 8091 |
+| **WON / FRENDS** | Product search and integration layer, port 8092 |
 
-Testikattavuus: **69 testitapausta** (49 smoke · 12 regressio · 8 negatiivinen).
+Test coverage: **69 test cases** (49 smoke · 12 regression · 8 negative).
 
 ---
 
-## Tiedostorakenne
+## File Structure
 
 ```
 .
-├── smoke_test_dev.py       # Python smoke-testi (DEV)
-├── smoke_test_dev.sh       # Bash smoke-testi (DEV, CI/CD-yhteensopiva)
-├── fetchdata.py            # Testidatan hakutyökalu — kirjoittaa testdata_<env>.json
-└── testdata_dev.json       # Generoitu testitestausdata (ei versioitua — lisää .gitignore)
+├── smoke_test_dev.py       # Python smoke test (DEV)
+├── smoke_test_dev.sh       # Bash smoke test (DEV, CI/CD compatible)
+├── fetchdata.py            # Test data fetching tool — writes testdata_<env>.json
+└── testdata_dev.json       # Generated test data (not versioned — add to .gitignore)
 ```
 
 ---
 
-## Esivaatimukset
+## Prerequisites
 
 - Python 3.10+
-- `requests`-kirjasto
+- `requests` library
 
 ```bash
 pip install requests
 ```
 
-Bash-skriptiä varten tarvitaan `curl` (yleensä valmiiksi asennettuna Linux/macOS-ympäristöissä).
+For the Bash script, `curl` is required (usually pre-installed on Linux/macOS).
 
 ---
 
-## Asennus
+## Installation
 
 ```bash
 git clone <repo-url>
-cd <repo-hakemisto>
+cd <repo-directory>
 pip install requests
 ```
 
 ---
 
-## Käyttö
+## Usage
 
 ### smoke_test_dev.py
 
-Ajaa kaikki smoke-testit DEV-ympäristöä vastaan ja tulostaa tulokset konsoliin.
+Runs all smoke tests against the DEV environment and prints results to the console.
 
 ```bash
 python smoke_test_dev.py
 ```
 
-**Esimerkkituloste:**
+**Example output:**
 
 ```
 🔵 Health checks
@@ -98,90 +98,90 @@ python smoke_test_dev.py
 ============================================================
 ```
 
-Skripti palauttaa exit-koodin `0` kaikkien testien läpäistyä, `1` jos jokin testi epäonnistuu.
+The script returns exit code `0` if all tests pass, `1` if any test fails.
 
 ---
 
 ### smoke_test_dev.sh
 
-Bash-vaihtoehto, sopii CI/CD-putkiin (Jenkins, GitHub Actions jne.).
+Bash alternative, suitable for CI/CD pipelines (Jenkins, GitHub Actions, etc.).
 
 ```bash
 chmod +x smoke_test_dev.sh
 ./smoke_test_dev.sh
 ```
 
-Palauttaa exit-koodin `0` / `1` samoin kuin Python-versio.
+Returns exit code `0` / `1` the same way as the Python version.
 
 ---
 
 ### fetchdata.py
 
-Hakee ajantasaiset viitearvot (external reference -tunnisteet, product code -arvot jne.) kohdeympäristöstä ja kirjoittaa ne `testdata_<env>.json`-tiedostoon. Smoke-testit voivat käyttää tätä tiedostoa dynaamisina testitietoina kiinteiden arvojen sijaan.
+Fetches up-to-date reference values (external reference identifiers, product codes, etc.) from the target environment and writes them to `testdata_<env>.json`. Smoke tests can use this file as dynamic test data instead of hardcoded values.
 
 ```bash
-# Hae testdata DEV-ympäristöstä
+# Fetch test data from DEV environment
 python fetchdata.py --env dev
 
-# Hae testdata ja kirjoita mukautettuun tiedostoon
+# Fetch test data and write to a custom file
 python fetchdata.py --env dev --out my_testdata.json
 ```
 
-**Parametrit:**
+**Parameters:**
 
-| Parametri | Pakollinen | Kuvaus |
+| Parameter | Required | Description |
 |---|---|---|
-| `--env` | Kyllä | Kohdeympäristö: `dev` \| `test` \| `prod` |
-| `--out` | Ei | Tulostiedoston polku (oletus: `testdata_<env>.json`) |
+| `--env` | Yes | Target environment: `dev` \| `test` \| `prod` |
+| `--out` | No | Output file path (default: `testdata_<env>.json`) |
 
-> ⚠️ `test`- ja `prod`-ympäristöjen host-osoitteet on merkitty `# TODO`-kommenteilla `fetchdata.py`-tiedostossa — päivitä ne ennen käyttöä.
+> ⚠️ The host addresses for `test` and `prod` environments are marked with `# TODO` comments in `fetchdata.py` — update them before use.
 
 ---
 
-## Testiympäristöt
+## Test Environments
 
-| Ympäristö | Kuvaus | Tila |
+| Environment | Description | Status |
 |---|---|---|
-| `dev` | `10.200.28.4` — kehitysympäristö | ✅ Toiminnassa |
-| `test` | Host päivittämättä | ⚠️ TODO |
-| `prod` | Host päivittämättä | ⚠️ TODO |
+| `dev` | `10.200.28.4` — development environment | ✅ Active |
+| `test` | Host not updated | ⚠️ TODO |
+| `prod` | Host not updated | ⚠️ TODO |
 
-Host-osoitteet on määritelty kunkin skriptin alussa muuttujina (`HOST_CIM`, `HOST_BAPI` jne.).
-
----
-
-## Testauksen laajuus
-
-Kaikki testit ovat **HTTP GET -pyyntöjä**. Kirjoitusoperaatioita (POST/PUT/DELETE) ei testata tässä suiteessa.
-
-**Testityypit:**
-
-- `@smoke` — palvelun saavutettavuus, odotettu HTTP-statuskoodi
-- `@regression` — schemavalidointi ja datan oikeellisuus (Postman-kokoelmat)
-- `@negative` — virhetilanteet ja autentikaation valvonta
-
-Suorituskykyä (vasteajat) ei mitata — timeout on 10 sekuntia pyyntöä kohden.
+Host addresses are defined as variables at the top of each script (`HOST_CIM`, `HOST_BAPI`, etc.).
 
 ---
 
-## Tunnistautuminen
+## Test Scope
 
-FRENDS-integraatiokerroksen (`/api/won`) endpointit vaativat API-avainautentikaation:
+All tests are **HTTP GET requests**. Write operations (POST/PUT/DELETE) are not tested in this suite.
+
+**Test types:**
+
+- `@smoke` — service reachability, expected HTTP status code
+- `@regression` — schema validation and data correctness (Postman collections)
+- `@negative` — error conditions and authentication enforcement
+
+Performance (response times) is not measured — timeout is 10 seconds per request.
+
+---
+
+## Authentication
+
+FRENDS integration layer (`/api/won`) endpoints require API key authentication:
 
 ```
 Header: X-ApiKey
-Value:  <api-avain>
+Value:  <api-key>
 ```
 
-Muut palvelut (CIM, BAPI, FENIX kanavalistat jne.) eivät vaadi autentikaatioheadereita testatuissa poluissa.
+Other services (CIM, BAPI, FENIX channel lists, etc.) do not require authentication headers on the tested paths.
 
-> 🔐 Älä tallenna API-avainta versionhallintaan. Käytä ympäristömuuttujia tai erillistä secrets-hallintaa.
+> 🔐 Do not store the API key in version control. Use environment variables or a dedicated secrets manager.
 
 ---
 
-## Tiedostomuoto: testdata JSON
+## File Format: testdata JSON
 
-`fetchdata.py` tuottaa rakenteeltaan seuraavan tiedoston:
+`fetchdata.py` produces a file with the following structure:
 
 ```json
 {
@@ -199,7 +199,7 @@ Muut palvelut (CIM, BAPI, FENIX kanavalistat jne.) eivät vaadi autentikaatiohea
 }
 ```
 
-`_meta.errors`-lista on tyhjä onnistuneen ajon jälkeen. Skripti palauttaa exit-koodin `1` jos hakuvirheitä esiintyi.
+The `_meta.errors` list is empty after a successful run. The script returns exit code `1` if any fetch errors occurred.
 
 ---
 
